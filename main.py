@@ -71,7 +71,7 @@ async def on_ready():
     print(f"Logged in as {client.user} (ID: {client.user.id})")
     await client.change_presence(
         activity=discord.Activity(
-            type=discord.ActivityType.playing,
+            type=discord.ActivityType.custom,
             name="Breaching the Arcanum"
         )
     )
@@ -205,7 +205,7 @@ async def on_app_command_error(interaction, error):
         await client.change_presence(
             status=discord.Status.dnd,
             activity=discord.Activity(
-                type=discord.ActivityType.playing,
+                type=discord.ActivityType.custom,
                 name="[ERROR] Breaching the Arcanum"
             )
         )
