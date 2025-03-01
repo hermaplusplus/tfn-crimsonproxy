@@ -172,7 +172,7 @@ async def ccdb(interaction: discord.Interaction, ckey: str, page: Optional[int] 
 @client.tree.command(description="Displays a list of commands and how to use the bot.")
 async def help(interaction:discord.Interaction):
     if PROD or interaction.guild.id == 342787099407155202:
-        if 1224447318342897664 in [r.id for r in interaction.user.roles]:
+        if any(item in [r.id for r in interaction.user.roles] for item in [TESTING_ROLE_ID, HEAD_STAFF_ROLE_ID, STAFF_ROLE_ID]):
             await interaction.response.send_message(STAFF_HELP_MESSAGE, ephemeral=True)
         else:
             await interaction.response.send_message("⛔ Sorry, this bot is currently for staff use only!", ephemeral=True)
