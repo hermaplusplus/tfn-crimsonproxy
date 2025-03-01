@@ -84,18 +84,14 @@ async def on_ready():
 @app_commands.describe(ckey="BYOND Username")
 @app_commands.describe(public="If enabled, the output will be visible to all users.")
 @client.tree.command(description="Shows some details of BYOND account by Ckey.")
-async def lookup(interaction: discord.Interaction, ckey: Optional[str],  public: Optional[bool] = False):
+async def lookup(interaction: discord.Interaction, ckey: str,  public: Optional[bool] = False):
     await interaction.response.defer(ephemeral=True if not public else False)
     if PROD or interaction.guild.id == TESTING_GUILD_ID:
-        if ckey is None:
-            await interaction.followup.send("You must specify a Ckey.", ephemeral=True)
+        try:
+            playerData = getPlayerData(ckey)
+        except:
+            await interaction.followup.send("The Ckey you specified couldn't be found.", ephemeral=True)
             return
-        else:
-            try:
-                playerData = getPlayerData(ckey)
-            except:
-                await interaction.followup.send("The Ckey you specified couldn't be found.", ephemeral=True)
-                return
         ccdb = requests.get(f"https://centcom.melonmesa.com/ban/search/{ckey}")
         embs = []
         emb = discord.Embed()
