@@ -82,51 +82,23 @@ async def on_ready():
     STAFF_ROLE_ID
 )
 @app_commands.describe(ckey="BYOND Username")
-@app_commands.describe(discorduser="Discord User")
 @app_commands.describe(public="If enabled, the output will be visible to all users.")
-@client.tree.command(description="Shows some details of BYOND account by Ckey and its associated Discord user.")
-async def lookup(interaction: discord.Interaction, ckey: Optional[str], discorduser: Optional[discord.User], public: Optional[bool] = False):
+@client.tree.command(description="Shows some details of BYOND account by Ckey.")
+async def lookup(interaction: discord.Interaction, ckey: Optional[str],  public: Optional[bool] = False):
     await interaction.response.defer(ephemeral=True if not public else False)
     if PROD or interaction.guild.id == TESTING_GUILD_ID:
-        if ckey is None and discorduser is None:
-            await interaction.followup.send("You must specify a Ckey or Discord user.", ephemeral=True)
-            return
-        if ckey is not None and discorduser is not None:
-            await interaction.followup.send("You must specify only a Ckey or Discord user, not both.", ephemeral=True)
-            return
         if ckey is not None:
+            await interaction.followup.send("You must specify a Ckey.", ephemeral=True)
+            return
+        else:
             try:
                 playerData = getPlayerData(ckey)
             except:
                 await interaction.followup.send("The Ckey you specified couldn't be found.", ephemeral=True)
                 return
-            with open('accountlinks.csv', 'r') as file:
-                reader = csv.reader(file)
-                for row in reader:
-                    if ''.join(ch for ch in row[1] if ch.isalnum()).lower() == ''.join(ch for ch in ckey if ch.isalnum()).lower():
-                        discorduser = await client.fetch_user(int(row[0]))
-                        break
-        if discorduser is not None:
-            with open('accountlinks.csv', 'r') as file:
-                reader = csv.reader(file)
-                for row in reader:
-                    if row[0] == str(discorduser.id):
-                        ckey = row[1]
-                        break
-            try:
-                playerData = getPlayerData(ckey)
-            except:
-                await interaction.followup.send(f"The ckey associated with {discorduser.mention} could not be found!\n## Please contact <@188796089380503555> about this immediately!", ephemeral=True)
-                return
         ccdb = requests.get(f"https://centcom.melonmesa.com/ban/search/{ckey}")
         embs = []
         emb = discord.Embed()
-        if discorduser is not None:
-            emb.add_field(name="Associated Discord", value=f"{discorduser.mention}", inline=True)
-            emb.add_field(name="Discord Created", value=f"<t:{int((discorduser.created_at).timestamp())}:d> (<t:{int((discorduser.created_at).timestamp())}:R>)", inline=True)
-            emb.add_field(name="\u200B", value="\u200B")
-        else:
-            emb.add_field(name="Associated Discord", value=f"Not registered!", inline=False)
         if ckey is not None:
             emb.add_field(name="Ckey", value=f"`{playerData['ckey']}`", inline=True)
             emb.add_field(name="Account Creation Date", value=f"<t:{str(int(time.mktime(datetime.strptime(playerData['joined'], '%Y-%m-%d').timetuple())))}:d> (<t:{str(int(time.mktime(datetime.strptime(playerData['joined'], '%Y-%m-%d').timetuple())))}:R>)", inline=True)
