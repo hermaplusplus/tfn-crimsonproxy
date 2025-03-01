@@ -87,7 +87,7 @@ async def on_ready():
 async def lookup(interaction: discord.Interaction, ckey: Optional[str],  public: Optional[bool] = False):
     await interaction.response.defer(ephemeral=True if not public else False)
     if PROD or interaction.guild.id == TESTING_GUILD_ID:
-        if ckey is not None:
+        if ckey is None:
             await interaction.followup.send("You must specify a Ckey.", ephemeral=True)
             return
         else:
