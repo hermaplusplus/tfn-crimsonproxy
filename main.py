@@ -31,6 +31,8 @@ TESTING_GUILD_ID = 342787099407155202
 TESTING_ROLE_ID = 342788067297329154
 HEAD_STAFF_ROLE_ID = 1343639309663604857
 STAFF_ROLE_ID = 1343638775892545647
+TRIAL_STAFF_ROLE_ID = 1346554402957430855
+MODERATOR_ROLE_ID = 1343638920503492628
 
 PROD = True
 
@@ -79,7 +81,9 @@ async def on_ready():
 @app_commands.checks.has_any_role(
     TESTING_ROLE_ID,
     HEAD_STAFF_ROLE_ID,
-    STAFF_ROLE_ID
+    STAFF_ROLE_ID,
+    TRIAL_STAFF_ROLE_ID,
+    MODERATOR_ROLE_ID
 )
 @app_commands.describe(ckey="BYOND Username")
 @app_commands.describe(public="If enabled, the output will be visible to all users.")
@@ -122,7 +126,9 @@ async def lookup(interaction: discord.Interaction, ckey: str,  public: Optional[
 @app_commands.checks.has_any_role(
     TESTING_ROLE_ID,
     HEAD_STAFF_ROLE_ID,
-    STAFF_ROLE_ID
+    STAFF_ROLE_ID,
+    TRIAL_STAFF_ROLE_ID,
+    MODERATOR_ROLE_ID
 )
 @app_commands.describe(ckey="BYOND Username")
 @app_commands.describe(page="Page Number")
